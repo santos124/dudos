@@ -1,8 +1,10 @@
 package main
 
 import (
+	"dudos/CETb"
 	"dudos/arguments"
 	"dudos/config"
+	payload2 "dudos/payload"
 	"dudos/sender"
 	"fmt"
 	"github.com/sirupsen/logrus"
@@ -25,16 +27,28 @@ func main() {
 			},
 			PrettyPrint: true,
 		})
+
 	logrus.SetReportCaller(true)
 	lvl, err := logrus.ParseLevel(cfg.LogLevel)
 	if err != nil {
 		logrus.Fatal(err)
 	}
 
-	flag1 := arguments.New()
+	flags := arguments.New()
+	if flags == nil {
+		logrus.Fatal("flags is nil")
+	}
+
+	flags.Payload, err = payload2.New(flags.PayloadType)
+	if err != nil {
+		logrus.Fatal(err)
+	}
 
 	sender.New()
 
 	logrus.SetLevel(lvl)
-	logrus.Fatalf("%+v, %+v", cfg, flag1)
+	cet := CETb.New()
+	cet.StartLoad(flags)
+
+	logrus.Fatalf("%+v, %+v", cfg, flags)
 }

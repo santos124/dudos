@@ -12,16 +12,16 @@ type Payload struct {
 	Object string
 }
 
-func New(typePayload string) (*Payload, error) {
+func New(typePayload string) (string, error) {
 
 	object := ""
-	lenPayload, err := strconv.Atoi(typePayload)
+	lenPayload, err := getLength(typePayload)
 	if err != nil || lenPayload <= 0 {
-		return nil, fmt.Errorf("%v:%v", error_vars.ErrorOfBadTypePayload, err)
+		return "", fmt.Errorf("%v:%v", error_vars.ErrorOfBadTypePayload, err)
 	}
 
 	if countNonDigit(typePayload) != 2 {
-		return nil, error_vars.ErrorOfBadTypePayload
+		return "", error_vars.ErrorOfBadTypePayload
 	}
 
 	switch {
@@ -30,17 +30,14 @@ func New(typePayload string) (*Payload, error) {
 	case strings.Contains(typePayload, "kb"):
 		object = "kb"
 	default:
-		return nil, error_vars.ErrorOfBadTypePayload
+		return "", error_vars.ErrorOfBadTypePayload
 	}
 
 	for i := 0; i < lenPayload; i++ {
 		object += "x"
 	}
 
-	return &Payload{
-		Type:   typePayload,
-		Object: object,
-	}, nil
+	return object, nil
 }
 
 func countNonDigit(line string) int {
@@ -52,4 +49,13 @@ func countNonDigit(line string) int {
 	}
 
 	return cnt
+}
+
+func getLength(line string) (int, error) {
+	for i := range line {
+		if line[i] < '0' || line[i] > '9' {
+			return strconv.Atoi(line[:i])
+		}
+	}
+	return 0, error_vars.ErrorOfBadTypePayload
 }
