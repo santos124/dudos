@@ -130,6 +130,8 @@ func (c *CETb) doPost(arguments arguments.Flag) (*resty.Response, error) {
 		}).Post(arguments.Endpoint)
 	if err != nil {
 		return nil, err
+	} else {
+		logrus.Infof("code:%v, body:%v", response.StatusCode(), string(response.Body()))
 	}
 
 	return response, nil
@@ -144,6 +146,8 @@ func (c *CETb) doGet(arguments arguments.Flag) (*resty.Response, error) {
 		}).Get(arguments.Endpoint)
 	if err != nil {
 		return nil, err
+	} else {
+		logrus.Infof("code:%v, body:%v", response.StatusCode(), string(response.Body()))
 	}
 
 	return response, nil
